@@ -1,0 +1,75 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Edit Employee</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f5f9;
+            padding: 30px;
+            color: #263238;
+        }
+        .panel {
+            max-width: 520px;
+            margin: 40px auto;
+            background: white;
+            padding: 28px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px #0000000d;
+        }
+        input {
+            box-sizing: border-box;
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin: 12px 0;
+            border: 1px solid #ccd2df;
+            border-radius: 6px;
+        }
+        button, a {
+            display: inline-block;
+            background: #344bb5;
+            color: white;
+            padding: 11px 15px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .error { color: #c0392b; }
+    </style>
+</head>
+<body>
+<div class="panel">
+    <h1>Edit Employee</h1>
+
+    <p class="error" th:if="${errorMessage}"
+       th:text="${errorMessage}"></p>
+
+    <form th:action="@{/update/{id}(id=${employee.id})}"
+          th:object="${employee}" method="post">
+
+        <label>First Name</label>
+        <input type="text" th:field="*{firstName}" required>
+        <div class="error" th:if="${#fields.hasErrors('firstName')}"
+             th:errors="*{firstName}"></div>
+
+        <label>Last Name</label>
+        <input type="text" th:field="*{lastName}" required>
+        <div class="error" th:if="${#fields.hasErrors('lastName')}"
+             th:errors="*{lastName}"></div>
+
+        <label>Email</label>
+        <input type="email" th:field="*{email}" required>
+        <div class="error" th:if="${#fields.hasErrors('email')}"
+             th:errors="*{email}"></div>
+
+        <button type="submit">Update Employee</button>
+        <a th:href="@{/}">Cancel</a>
+    </form>
+</div>
+</body>
+</html>

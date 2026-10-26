@@ -1,0 +1,130 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Employee Manager</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f5f9;
+            margin: 0;
+            padding: 30px;
+            color: #263238;
+        }
+        .container {
+            max-width: 1000px;
+            margin: auto;
+        }
+        h1 { color: #263b80; }
+        .panel {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            box-shadow: 0 3px 12px #0000000d;
+        }
+        input {
+            box-sizing: border-box;
+            padding: 11px;
+            margin: 6px 4px 6px 0;
+            border: 1px solid #ccd2df;
+            border-radius: 6px;
+        }
+        button, .action {
+            display: inline-block;
+            background: #344bb5;
+            color: white;
+            padding: 10px 14px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .delete { background: #c0392b; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #e5e8ef;
+        }
+        th { background: #eef1fb; }
+        .message { color: #16804a; }
+        .error { color: #c0392b; }
+        .actions { display: flex; gap: 8px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Employee Manager</h1>
+    <p>Manage your employee records.</p>
+
+    <div class="panel">
+        <h2>Add Employee</h2>
+
+        <p class="message" th:if="${successMessage}"
+           th:text="${successMessage}"></p>
+        <p class="error" th:if="${errorMessage}"
+           th:text="${errorMessage}"></p>
+
+        <form th:action="@{/save}" th:object="${employee}" method="post">
+            <input type="text" th:field="*{firstName}"
+                   placeholder="First name" required>
+            <input type="text" th:field="*{lastName}"
+                   placeholder="Last name" required>
+            <input type="email" th:field="*{email}"
+                   placeholder="Email address" required>
+            <button type="submit">Add Employee</button>
+
+            <div class="error" th:if="${#fields.hasErrors('firstName')}"
+                 th:errors="*{firstName}"></div>
+            <div class="error" th:if="${#fields.hasErrors('lastName')}"
+                 th:errors="*{lastName}"></div>
+            <div class="error" th:if="${#fields.hasErrors('email')}"
+                 th:errors="*{email}"></div>
+        </form>
+    </div>
+
+    <div class="panel">
+        <h2>Employee List</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="emp : ${employees}">
+                <td th:text="${emp.id}"></td>
+                <td th:text="${emp.firstName}"></td>
+                <td th:text="${emp.lastName}"></td>
+                <td th:text="${emp.email}"></td>
+                <td>
+                    <div class="actions">
+                        <a class="action"
+                           th:href="@{/edit/{id}(id=${emp.id})}">Edit</a>
+                        <a class="action delete"
+                           th:href="@{/delete/{id}(id=${emp.id})}"
+                           onclick="return confirm('Delete this employee?')">
+                            Delete
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(employees)}">
+                <td colspan="5">No employees added yet.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
