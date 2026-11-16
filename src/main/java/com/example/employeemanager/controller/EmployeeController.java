@@ -1,4 +1,3 @@
-
 package com.example.employeemanager.controller;
 
 import com.example.employeemanager.model.Employee;
@@ -21,8 +20,8 @@ public class EmployeeController {
         this.employeeService = employeeService;
     }
 
-    // Display the employee form and employee table
-    @GetMapping("/")
+    // Display the employee form and employee table (Supports both "/" and "/employees")
+    @GetMapping({"/", "/employees"})
     public String listEmployees(Model model) {
         model.addAttribute("employees", employeeService.getAllEmployees());
 
@@ -48,14 +47,12 @@ public class EmployeeController {
 
         if (employeeService.emailExists(employee.getEmail())) {
             model.addAttribute("employees", employeeService.getAllEmployees());
-            model.addAttribute("errorMessage",
-                    "This email is already registered");
+            model.addAttribute("errorMessage", "This email is already registered");
             return "employees";
         }
 
         employeeService.saveEmployee(employee);
-        redirectAttributes.addFlashAttribute(
-                "successMessage", "Employee saved successfully!");
+        redirectAttributes.addFlashAttribute("successMessage", "Employee saved successfully!");
 
         return "redirect:/";
     }
@@ -96,14 +93,12 @@ public class EmployeeController {
 
         if (!existing.get().getEmail().equals(employee.getEmail())
                 && employeeService.emailExists(employee.getEmail())) {
-            model.addAttribute("errorMessage",
-                    "This email is already registered");
+            model.addAttribute("errorMessage", "This email is already registered");
             return "edit-employee";
         }
 
         employeeService.saveEmployee(employee);
-        redirectAttributes.addFlashAttribute(
-                "successMessage", "Employee updated successfully!");
+        redirectAttributes.addFlashAttribute("successMessage", "Employee updated successfully!");
 
         return "redirect:/";
     }
@@ -115,8 +110,7 @@ public class EmployeeController {
             RedirectAttributes redirectAttributes) {
 
         employeeService.deleteEmployee(id);
-        redirectAttributes.addFlashAttribute(
-                "successMessage", "Employee deleted successfully!");
+        redirectAttributes.addFlashAttribute("successMessage", "Employee deleted successfully!");
 
         return "redirect:/";
     }

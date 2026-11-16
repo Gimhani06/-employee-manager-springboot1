@@ -33,6 +33,7 @@ public class Employee {
     @NotBlank(message = "Department is required")
     private String department;
 
+    @NotNull(message = "Salary is required")
     @Positive(message = "Salary must be greater than zero")
     private Double salary;
 }
