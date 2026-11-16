@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -25,10 +24,16 @@
             margin-bottom: 24px;
             box-shadow: 0 3px 12px #0000000d;
         }
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+        }
         input {
             box-sizing: border-box;
+            width: 100%;
             padding: 11px;
-            margin: 6px 4px 6px 0;
+            margin: 6px 0;
             border: 1px solid #ccd2df;
             border-radius: 6px;
         }
@@ -72,20 +77,37 @@
            th:text="${errorMessage}"></p>
 
         <form th:action="@{/save}" th:object="${employee}" method="post">
-            <input type="text" th:field="*{firstName}"
-                   placeholder="First name" required>
-            <input type="text" th:field="*{lastName}"
-                   placeholder="Last name" required>
-            <input type="email" th:field="*{email}"
-                   placeholder="Email address" required>
+            <div class="form-grid">
+                <div>
+                    <input type="text" th:field="*{fullName}" placeholder="Full name" required>
+                    <div class="error" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></div>
+                </div>
+                <div>
+                    <input type="email" th:field="*{email}" placeholder="Email address" required>
+                    <div class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                </div>
+                <div>
+                    <input type="tel"
+                           th:field="*{phone}"
+                           placeholder="Phone number"
+                           required
+                           pattern="[0-9]{10}"
+                           maxlength="10"
+                           inputmode="numeric"
+                           title="Phone must contain exactly 10 digits">
+                    <div class="error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></div>
+                </div>
+                <div>
+                    <input type="text" th:field="*{department}" placeholder="Department" required>
+                    <div class="error" th:if="${#fields.hasErrors('department')}" th:errors="*{department}"></div>
+                </div>
+                <div>
+                    <input type="number" step="0.01" th:field="*{salary}" placeholder="Salary" required>
+                    <div class="error" th:if="${#fields.hasErrors('salary')}" th:errors="*{salary}"></div>
+                </div>
+            </div>
+            <br>
             <button type="submit">Add Employee</button>
-
-            <div class="error" th:if="${#fields.hasErrors('firstName')}"
-                 th:errors="*{firstName}"></div>
-            <div class="error" th:if="${#fields.hasErrors('lastName')}"
-                 th:errors="*{lastName}"></div>
-            <div class="error" th:if="${#fields.hasErrors('email')}"
-                 th:errors="*{email}"></div>
         </form>
     </div>
 
@@ -95,32 +117,33 @@
             <thead>
             <tr>
                 <th>ID</th>
-                <th>First Name</th>
-                <th>Last Name</th>
+                <th>Full Name</th>
                 <th>Email</th>
+                <th>Phone</th>
+                <th>Department</th>
+                <th>Salary</th>
                 <th>Actions</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="emp : ${employees}">
                 <td th:text="${emp.id}"></td>
-                <td th:text="${emp.firstName}"></td>
-                <td th:text="${emp.lastName}"></td>
+                <td th:text="${emp.fullName}"></td>
                 <td th:text="${emp.email}"></td>
+                <td th:text="${emp.phone}"></td>
+                <td th:text="${emp.department}"></td>
+                <td th:text="${emp.salary}"></td>
                 <td>
                     <div class="actions">
-                        <a class="action"
-                           th:href="@{/edit/{id}(id=${emp.id})}">Edit</a>
-                        <a class="action delete"
-                           th:href="@{/delete/{id}(id=${emp.id})}"
-                           onclick="return confirm('Delete this employee?')">
+                        <a class="action" th:href="@{/edit/{id}(id=${emp.id})}">Edit</a>
+                        <a class="action delete" th:href="@{/delete/{id}(id=${emp.id})}" onclick="return confirm('Delete this employee?')">
                             Delete
                         </a>
                     </div>
                 </td>
             </tr>
             <tr th:if="${#lists.isEmpty(employees)}">
-                <td colspan="5">No employees added yet.</td>
+                <td colspan="7">No employees added yet.</td>
             </tr>
             </tbody>
         </table>
